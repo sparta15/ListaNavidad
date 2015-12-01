@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">ListaNavidad</string>
+    <string name="title_activity_detalles_regalos">DetallesRegalos</string>
+
+    <string name="title_text">ListaNavidad</string>
+    <string name="hint_present">What did you buy?</string>
+    <string name="hint_price">Price Count</string>
+    <string name="submit_text">Submit</string>
+    <string name="delete_item">Delete Item</string>
+    <string name="share_title">Share</string>
+    <string name="price_total_text">Total Price:</string>
+    <string name="price_text">€</string>
+    <string name="price_items_num">Price Items:</string>
+    <string name="title_activity_display_presents">DisplayPresentsActivity</string>
+    <string name="title_activity_presents_item_details">PresentItemDetailsActivity</string>
+</resources>
