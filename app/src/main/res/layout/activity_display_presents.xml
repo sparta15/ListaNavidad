@@ -20,7 +20,10 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="hola"/>
         <TextView
             android:id="@+id/totalAmountTextView"
             android:textColor="#fff3f6ff"
