@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.listaNavidad.DisplayPresentsActivity;
+import com.listaNavidad.Inicio;
 import com.listaNavidad.PresentsItemDetailsActivity;
 import com.listaNavidad.R;
 
@@ -54,7 +56,7 @@ public class CustomListviewAdapter extends ArrayAdapter<Present> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         View row = convertView;
         ViewHolder holder = null;
@@ -69,6 +71,8 @@ public class CustomListviewAdapter extends ArrayAdapter<Present> {
             holder.presentName = (TextView) row.findViewById(R.id.name);
             holder.presentDate = (TextView) row.findViewById(R.id.dateText);
             holder.presentPrize = (TextView) row.findViewById(R.id.price);
+            holder.next = (TextView) row.findViewById(R.id.hasChild);
+            holder.delete = (TextView) row.findViewById(R.id.deleteItem);
 
             row.setTag(holder);
 
@@ -82,10 +86,10 @@ public class CustomListviewAdapter extends ArrayAdapter<Present> {
 
         holder.presentName.setText(holder.present.getPresentName());
         holder.presentDate.setText(holder.present.getRecordDate());
-        holder.presentPrize.setText(String.valueOf(holder.present.getPresentPrize()));
+        holder.presentPrize.setText(String.valueOf(holder.present.getPresentPrice()));
 
         final ViewHolder finalHolder = holder;
-        row.setOnClickListener(new View.OnClickListener() {
+        holder.next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -100,9 +104,24 @@ public class CustomListviewAdapter extends ArrayAdapter<Present> {
 
             }
         });
+        final int id = holder.present.getPresentId();
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteItem(id);
+            }
+        });
 
         return row;
 
+    }
+
+    private void deleteItem(int id) {
+        DatabaseHandler dba = new DatabaseHandler(this.getContext());
+        dba.deletePresent(id);
+        Intent intent = new Intent(this.getContext(), DisplayPresentsActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        this.getContext().startActivity(intent);
     }
 
     public class ViewHolder {
@@ -110,6 +129,8 @@ public class CustomListviewAdapter extends ArrayAdapter<Present> {
         TextView presentName;
         TextView presentPrize;
         TextView presentDate;
+        TextView next;
+        TextView delete;
 
     }
 }

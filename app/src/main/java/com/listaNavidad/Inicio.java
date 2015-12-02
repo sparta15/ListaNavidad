@@ -3,6 +3,7 @@ package com.listaNavidad;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,47 +14,53 @@ import model.Present;
 
 public class Inicio extends AppCompatActivity {
 
-    private EditText presentName, presentPrize;
-    private Button submitButton;
+    private EditText presentName, presentPrice;
+    private Button submitButton, goToList;
     private DatabaseHandler dba;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inicio);
-
         dba = new DatabaseHandler(Inicio.this);
 
         presentName = (EditText) findViewById(R.id.presentEditText);
-        presentPrize = (EditText) findViewById(R.id.priceEditText);
+        presentPrice = (EditText) findViewById(R.id.priceEditText);
         submitButton = (Button) findViewById(R.id.submitButton);
+        goToList = (Button) findViewById(R.id.goToListButton);
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                saveDataToDB();
+                if(saveDataToDB())
+                    startActivity(new Intent(Inicio.this, DisplayPresentsActivity.class));
+            }
+        });
+
+        goToList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Inicio.this, DisplayPresentsActivity.class));
             }
         });
     }
 
-    private void saveDataToDB() {
+    private boolean saveDataToDB() {
 
         Present present = new Present();
         String name = presentName.getText().toString().trim();
-        String calsString = presentPrize.getText().toString().trim();
-
-        int prize = Integer.parseInt(calsString);
+        String calsString = presentPrice.getText().toString().trim();
 
         if (name.equals("") || calsString.equals("")) {
 
-            Toast.makeText(getApplicationContext(), "No empty fields allowed", Toast.LENGTH_LONG).show();
-
+            Toast.makeText(getApplicationContext(), R.string.toastBegin, Toast.LENGTH_LONG).show();
+            return false;
         }else {
-
+            double price = Double.parseDouble(calsString);
             present.setPresentName(name);
-            present.setPresentPrize(prize);
+            present.setPresentPrice(price);
 
             dba.addPresent(present);
             dba.close();
@@ -61,11 +68,8 @@ public class Inicio extends AppCompatActivity {
 
             //clear the form
             presentName.setText("");
-            presentPrize.setText("");
-
-            //take users to next screen (display all entered items)
-            startActivity(new Intent(Inicio.this, DisplayPresentsActivity.class));
+            presentPrice.setText("");
         }
-
+        return true;
     }
 }

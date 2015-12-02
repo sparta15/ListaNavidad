@@ -8,6 +8,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +21,7 @@ public class PresentsItemDetailsActivity extends AppCompatActivity {
 
     private TextView presentName, presentPrize, dateTaken;
     private int presentId;
+    private Present present;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +34,6 @@ public class PresentsItemDetailsActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                */
                 sharePresents();
             }
         });
@@ -42,10 +43,10 @@ public class PresentsItemDetailsActivity extends AppCompatActivity {
         dateTaken = (TextView) findViewById(R.id.detsDateText);
 
 
-        Present present = (Present) getIntent().getSerializableExtra("userObj");
+        present = (Present) getIntent().getSerializableExtra("userObj");
 
         presentName.setText(present.getPresentName());
-        presentPrize.setText(String.valueOf(present.getPresentPrize()));
+        presentPrize.setText(String.valueOf(present.getPresentPrice()));
         dateTaken.setText(present.getRecordDate());
 
         presentId = present.getPresentId();
@@ -84,7 +85,5 @@ public class PresentsItemDetailsActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
         }
     }
-
-
 
 }

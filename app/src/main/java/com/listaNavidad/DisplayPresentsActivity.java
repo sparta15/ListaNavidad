@@ -1,8 +1,12 @@
 package com.listaNavidad;
 
+import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -33,6 +37,14 @@ public class DisplayPresentsActivity extends AppCompatActivity {
         totalPresents = (TextView) findViewById(R.id.totalItemsTextView);
 
         refreshData();
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(DisplayPresentsActivity.this,Inicio.class));
+            }
+        });
     }
 
 
@@ -43,42 +55,43 @@ public class DisplayPresentsActivity extends AppCompatActivity {
 
         ArrayList<Present> presentFromDB = dba.getPresent();
 
-        int prizeValue = dba.totalPrize();
+        double priceValue = (double)Math.round(dba.totalPrize() * 100) / 100;
         int totalItems = dba.getTotalItems();
 
-        String formattedValue = Utils.formatNumber(prizeValue);
-        String formattedItems = Utils.formatNumber(totalItems);
 
-        totalPrize.setText("Total Prizes: " + formattedValue);
+        String formattedValue = priceValue+"";
+        String formattedItems = totalItems+"";
+        totalPrize.setText("Total Prizes: " + formattedValue + "€");
         totalPresents.setText("Total Present: " + formattedItems);
+        if(presentFromDB.size()>0) {
+            for (int i = 0; i < presentFromDB.size(); i++) {
 
-        for (int i = 0; i < presentFromDB.size(); i++){
-
-            String name = presentFromDB.get(i).getPresentName();
-            String dateText = presentFromDB.get(i).getRecordDate();
-            int prize = presentFromDB.get(i).getPresentPrize();
-            int foodId = presentFromDB.get(i).getPresentId();
-
-            Log.v("PRESENT IDS: ", String.valueOf(foodId));
+                String name = presentFromDB.get(i).getPresentName();
+                String dateText = presentFromDB.get(i).getRecordDate();
+                double price = presentFromDB.get(i).getPresentPrice();
+                int foodId = presentFromDB.get(i).getPresentId();
+                Log.d("ASD", price + "----------------");
+                Log.v("PRESENT IDS: ", String.valueOf(foodId));
 
 
-            myPresent = new Present();
-            myPresent.setPresentName(name);
-            myPresent.setRecordDate(dateText);
-            myPresent.setPresentPrize(prize);
-            myPresent.setPresentId(foodId);
+                myPresent = new Present();
+                myPresent.setPresentName(name);
+                myPresent.setRecordDate(dateText);
+                myPresent.setPresentPrice(price);
+                myPresent.setPresentId(foodId);
 
-            dbPresents.add(myPresent);
+                dbPresents.add(myPresent);
 
+            }
+            dba.close();
+
+            //setup adapter
+            presentAdapter = new CustomListviewAdapter(DisplayPresentsActivity.this, R.layout.list_row, dbPresents);
+            listView.setAdapter(presentAdapter);
+            presentAdapter.notifyDataSetChanged();
+        } else {
+            finish();
         }
-        dba.close();
-
-        //setup adapter
-        presentAdapter = new CustomListviewAdapter(DisplayPresentsActivity.this, R.layout.list_row, dbPresents);
-        listView.setAdapter(presentAdapter);
-        presentAdapter.notifyDataSetChanged();
-
-
     }
 
 }

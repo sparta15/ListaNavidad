@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class Present implements Serializable {
     private static final long serialVersionUID = 10L;
     private String presentName;
-    private int presentPrize;
+    private double presentPrize;
     private int presentId;
     private String recordDate;
 
@@ -36,12 +36,12 @@ public class Present implements Serializable {
         this.presentName = presentName;
     }
 
-    public int getPresentPrize() {
+    public double getPresentPrice() {
         return presentPrize;
     }
 
-    public void setPresentPrize(int precio) {
-        this.presentPrize = precio;
+    public void setPresentPrice(double price) {
+        this.presentPrize = price;
     }
 
     public int getPresentId() {

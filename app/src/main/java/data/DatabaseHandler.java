@@ -31,7 +31,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         //create table
         String CREATE_TABLE = "CREATE TABLE " + Constants.TABLE_NAME + "("
                 + Constants.KEY_ID + " INTEGER PRIMARY KEY, " + Constants.PRESENT_NAME +
-                " TEXT, " + Constants.PRESENT_PRIZE_NAME + " INT, " + Constants.DATE_NAME + " LONG);";
+                " TEXT, " + Constants.PRESENT_PRICE_NAME + " REAL, " + Constants.DATE_NAME + " LONG);";
 
         db.execSQL(CREATE_TABLE);
 
@@ -66,24 +66,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     //get total euros
-    public int totalPrize() {
-        int prize = 0;
+    public double totalPrize() {
+        double price = 0;
 
         SQLiteDatabase dba = this.getReadableDatabase();
 
-        String query = "SELECT SUM( " + Constants.PRESENT_PRIZE_NAME + " ) " +
+        String query = "SELECT SUM( " + Constants.PRESENT_PRICE_NAME + " ) " +
                 "FROM " + Constants.TABLE_NAME;
 
         Cursor cursor = dba.rawQuery(query, null);
 
         if (cursor.moveToFirst()) {
-            prize = cursor.getInt(0);
+            price = cursor.getDouble(0);
         }
 
         cursor.close();
         dba.close();
 
-        return prize;
+        return price;
     }
 
 
@@ -106,12 +106,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(Constants.PRESENT_NAME, present.getPresentName());
-        values.put(Constants.PRESENT_PRIZE_NAME, present.getPresentPrize());
+        values.put(Constants.PRESENT_PRICE_NAME, present.getPresentPrice());
         values.put(Constants.DATE_NAME, System.currentTimeMillis());
 
         dba.insert(Constants.TABLE_NAME, null, values);
 
         Log.v("Regalo añadido", "Yesss!!");
+
+        Log.d("ASD", values.get(Constants.PRESENT_PRICE_NAME).toString());
 
         dba.close();
     }
@@ -125,7 +127,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase dba = this.getReadableDatabase();
 
         Cursor cursor = dba.query(Constants.TABLE_NAME,
-                new String[]{Constants.KEY_ID, Constants.PRESENT_NAME, Constants.PRESENT_PRIZE_NAME,
+                new String[]{Constants.KEY_ID, Constants.PRESENT_NAME, Constants.PRESENT_PRICE_NAME,
                         Constants.DATE_NAME}, null, null, null, null, Constants.DATE_NAME + " DESC ");
 
         //loop through...
@@ -134,7 +136,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
                 Present present = new Present();
                 present.setPresentName(cursor.getString(cursor.getColumnIndex(Constants.PRESENT_NAME)));
-                present.setPresentPrize(cursor.getInt(cursor.getColumnIndex(Constants.PRESENT_PRIZE_NAME)));
+                present.setPresentPrice(cursor.getDouble(cursor.getColumnIndex(Constants.PRESENT_PRICE_NAME)));
                 present.setPresentId(cursor.getInt(cursor.getColumnIndex(Constants.KEY_ID)));
 
                 DateFormat dateFormat = DateFormat.getDateInstance();
